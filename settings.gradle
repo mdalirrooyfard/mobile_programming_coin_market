@@ -1,2 +1,0 @@
-include ':app'
-rootProject.name = "mobile_programming_coin_market"
