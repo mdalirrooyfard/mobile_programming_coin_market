@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">mobile_programming_coin_market</string>
+    <string name="coin_symbol">BTC</string>
+    <string name="coin_divider">|</string>
+    <string name="coin_name">Bitcoin</string>
+    <string name="coin_sign">$</string>
+    <string name="priceUsdText">USD</string>
+    <string name="oneHour">1h:</string>
+    <string name="oneDay">1D:</string>
+    <string name="oneWeek">7D:</string>
 </resources>
