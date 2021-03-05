@@ -126,7 +126,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:textColor="color/colorPrimary"
             app:layout_constraintStart_toEndOf="@+id/oneHourText"
             app:layout_constraintBottom_toBottomOf="@+id/coin_icon"
             tools:ignore="MissingConstraints">
@@ -152,7 +151,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:textColor="color/colorPrimary"
             app:layout_constraintStart_toEndOf="@+id/oneDayText"
             app:layout_constraintBottom_toBottomOf="@+id/coin_icon"
             tools:ignore="MissingConstraints">
@@ -178,7 +176,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:textColor="color/colorPrimary"
             app:layout_constraintStart_toEndOf="@+id/oneWeekText"
             app:layout_constraintBottom_toBottomOf="@+id/coin_icon"
             tools:ignore="MissingConstraints">
