@@ -40,23 +40,27 @@ public class LoadCoins implements Runnable {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 ArrayList<CoinModel> coins = new ArrayList<CoinModel>();
+                JSONObject object = null;
+                JSONArray array = null;
+                try {
+                    object = new JSONObject(response.body().string());
+                    Log.i("body"," body:"+object.toString());
+                    array = object.getJSONArray("data");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 for (int i = 0; i < 10; i++) {
-                    JSONObject object = null;
                     JSONObject body = null;
                     JSONObject prices = null;
                     CoinModel coin = null;
                     try {
-                        object = new JSONObject(response.body().string());
-                        JSONArray array = object.getJSONArray("data");;
                         body = (JSONObject)array.get(i);
                         prices = body.getJSONObject("quote").getJSONObject("USD");
-
                         coin = new CoinModel(body.getInt("id"),body.getString("name"), body.getString("symbol"),prices.getDouble("price"), prices.getDouble("percent_change_1h"), prices.getDouble("percent_change_24h"), prices.getDouble("percent_change_7d"));
                         coins.add(coin);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
                     Log.i("start", "HERE"+ coin.toString());
                 }
             }
