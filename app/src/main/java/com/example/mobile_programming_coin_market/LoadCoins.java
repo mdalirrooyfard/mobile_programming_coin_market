@@ -2,14 +2,22 @@ package com.example.mobile_programming_coin_market;
 
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Dictionary;
 
 
 public class LoadCoins implements Runnable {
@@ -17,8 +25,8 @@ public class LoadCoins implements Runnable {
     private Request request;
     public LoadCoins(int start) {
         client = new OkHttpClient();
-        String uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=0&limit=10";
-        request = new Request.Builder().url(uri).addHeader("X-CoinAPI-Key", "1b622bf4-0389-4c29-8fd4-4bb3238a7e2e").build();
+        String uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=1&limit=10";
+        request = new Request.Builder().url(uri).addHeader("X-CMC_PRO_API_KEY", "3d34d69c-aefa-4c11-aa70-a8a9f49fa577").addHeader("Accept" ,"application/json").build();
     }
 
     @Override
@@ -31,9 +39,26 @@ public class LoadCoins implements Runnable {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                android.os.Process.killProcess(android.os.Process.myPid());
-                String body = response.body().toString();
-                Log.i("start", "done"+body);
+                ArrayList<CoinModel> coins = new ArrayList<CoinModel>();
+                for (int i = 0; i < 10; i++) {
+                    JSONObject object = null;
+                    JSONObject body = null;
+                    JSONObject prices = null;
+                    CoinModel coin = null;
+                    try {
+                        object = new JSONObject(response.body().string());
+                        JSONArray array = object.getJSONArray("data");;
+                        body = (JSONObject)array.get(i);
+                        prices = body.getJSONObject("quote").getJSONObject("USD");
+
+                        coin = new CoinModel(body.getInt("id"),body.getString("name"), body.getString("symbol"),prices.getDouble("price"), prices.getDouble("percent_change_1h"), prices.getDouble("percent_change_24h"), prices.getDouble("percent_change_7d"));
+                        coins.add(coin);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    Log.i("start", "HERE"+ coin.toString());
+                }
             }
         });
     }

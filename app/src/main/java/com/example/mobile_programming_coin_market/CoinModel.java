@@ -1,7 +1,9 @@
 package com.example.mobile_programming_coin_market;
 
+import android.support.v4.app.INotificationSideChannel;
+
 public class CoinModel {
-    public String id ;
+    public Integer id ;
     public String name ;
     public String symbol;
     public double price ;
@@ -12,7 +14,7 @@ public class CoinModel {
     public CoinModel(){
     }
 
-    public CoinModel(String id, String name, String symbol, double price, double percent_change_1h, double percent_change_24h, double percent_change_7d) {
+    public CoinModel(Integer id, String name, String symbol, double price, double percent_change_1h, double percent_change_24h, double percent_change_7d) {
         this.id = id;
         this.name = name;
         this.symbol = symbol;
@@ -22,11 +24,11 @@ public class CoinModel {
         this.percent_change_7d = percent_change_7d;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -76,5 +78,8 @@ public class CoinModel {
 
     public void setPercent_change_7d(double percent_change_7d) {
         this.percent_change_7d = percent_change_7d;
+    }
+    public String toString(){
+        return "This is coin with id: "+ id.toString()+" and name: "+ name;
     }
 }

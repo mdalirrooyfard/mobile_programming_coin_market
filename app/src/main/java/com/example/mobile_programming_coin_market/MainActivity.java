@@ -3,6 +3,7 @@ package com.example.mobile_programming_coin_market;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+                Log.i("HEY", "HEY");
                 LoadCoins l = new LoadCoins(0);
                 executor.execute(l);
             }
