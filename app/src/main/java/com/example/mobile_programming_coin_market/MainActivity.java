@@ -13,8 +13,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+
+import static java.text.DateFormat.getDateTimeInstance;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
                 ImageView imageView = (ImageView)findViewById(R.id.coin_picture);
                 Glide.with(getApplicationContext()).load("https://s2.coinmarketcap.com/static/img/coins/64x64/1.png").into(imageView);
                 Log.i("HEY", "Done the picture");
+
+                LoadCandles l2 = new LoadCandles("BTC", Range.weekly);
+                executor.execute(l2);
             }
         });
 

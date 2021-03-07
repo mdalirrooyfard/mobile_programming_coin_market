@@ -21,6 +21,7 @@ allprojects {
         maven { url 'https://dl.bintray.com/android/android-tools' }
         maven { url 'https://dl.bintray.com/firebase/gradle' }
         maven { url 'https://google.bintray.com/exoplayer/' }
+        maven { url "https://jitpack.io" }
         google()
         mavenCentral()
         jcenter()
