@@ -1,7 +1,10 @@
 package com.example.mobile_programming_coin_market;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.bumptech.glide.Glide;
 
@@ -31,7 +34,9 @@ public class LoadCoins implements Runnable {
         this.context = context;
         client = new OkHttpClient();
         String uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=1&limit=10";
-        request = new Request.Builder().url(uri).addHeader("X-CMC_PRO_API_KEY", "3d34d69c-aefa-4c11-aa70-a8a9f49fa577").addHeader("Accept" ,"application/json").build();
+        request = new Request.Builder().url(uri)
+                .addHeader("X-CMC_PRO_API_KEY", "3d34d69c-aefa-4c11-aa70-a8a9f49fa577")
+                .addHeader("Accept" ,"application/json").build();
     }
 
     @Override
@@ -42,6 +47,7 @@ public class LoadCoins implements Runnable {
                 Log.i("start", "fail to load");
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 ArrayList<CoinModel> coins = new ArrayList<CoinModel>();
@@ -49,7 +55,7 @@ public class LoadCoins implements Runnable {
                 JSONArray array = null;
                 try {
                     object = new JSONObject(response.body().string());
-                    Log.i("body"," body:"+object.toString());
+                    Log.i("body"," body:" + object.toString());
                     array = object.getJSONArray("data");
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -68,7 +74,7 @@ public class LoadCoins implements Runnable {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Log.i("start", "HERE"+ coin.toString());
+                    Log.i("start", "HERE "+ coin.toString());
                 }
             }
         });

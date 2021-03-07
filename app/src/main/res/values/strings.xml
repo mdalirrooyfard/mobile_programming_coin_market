@@ -8,4 +8,5 @@
     <string name="oneHour">1h:</string>
     <string name="oneDay">1D:</string>
     <string name="oneWeek">7D:</string>
+    <string name="page_title">Choose time interval</string>
 </resources>
