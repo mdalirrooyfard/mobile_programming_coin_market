@@ -63,7 +63,7 @@ public class CoinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         item_holder.percentageChangeOneDayText.setText((int) item.getPercent_change_24h()+"%");
         item_holder.percentageChangeOneWeekText.setText((int) item.getPercent_change_7d()+"%");
 
-        //todo Image
+        item.getIcon().into(item_holder.coin_icon);
 
         item_holder.percentageChangeOneHourText.setTextColor(item.getPercent_change_1h()<0?
                 Color.parseColor("#FF0000"):Color.parseColor("#32CD32"));

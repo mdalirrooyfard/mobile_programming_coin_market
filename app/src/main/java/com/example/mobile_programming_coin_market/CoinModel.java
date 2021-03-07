@@ -1,6 +1,9 @@
 package com.example.mobile_programming_coin_market;
 
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.INotificationSideChannel;
+
+import com.bumptech.glide.RequestBuilder;
 
 public class CoinModel {
     public Integer id ;
@@ -10,6 +13,16 @@ public class CoinModel {
     public double percent_change_1h ;
     public double percent_change_24h ;
     public double percent_change_7d ;
+    public RequestBuilder<Drawable> icon;
+
+    public RequestBuilder<Drawable> getIcon() {
+        return icon;
+    }
+
+    public void setIcon(RequestBuilder<Drawable> icon) {
+        this.icon = icon;
+    }
+
 
     public CoinModel(){
     }

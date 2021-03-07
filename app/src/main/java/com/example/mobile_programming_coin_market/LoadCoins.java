@@ -1,6 +1,9 @@
 package com.example.mobile_programming_coin_market;
 
+import android.content.Context;
 import android.util.Log;
+
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,7 +26,9 @@ import java.util.Dictionary;
 public class LoadCoins implements Runnable {
     private OkHttpClient client;
     private Request request;
-    public LoadCoins(int start) {
+    private Context context;
+    public LoadCoins(int start, Context context) {
+        this.context = context;
         client = new OkHttpClient();
         String uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=1&limit=10";
         request = new Request.Builder().url(uri).addHeader("X-CMC_PRO_API_KEY", "3d34d69c-aefa-4c11-aa70-a8a9f49fa577").addHeader("Accept" ,"application/json").build();
@@ -57,6 +62,8 @@ public class LoadCoins implements Runnable {
                         body = (JSONObject)array.get(i);
                         prices = body.getJSONObject("quote").getJSONObject("USD");
                         coin = new CoinModel(body.getInt("id"),body.getString("name"), body.getString("symbol"),prices.getDouble("price"), prices.getDouble("percent_change_1h"), prices.getDouble("percent_change_24h"), prices.getDouble("percent_change_7d"));
+                        String url = "https://s2.coinmarketcap.com/static/img/coins/64x64/"+body.getInt("id")+".png";
+                        coin.setIcon(GlideApp.with(context).load(url));
                         coins.add(coin);
                     } catch (JSONException e) {
                         e.printStackTrace();
