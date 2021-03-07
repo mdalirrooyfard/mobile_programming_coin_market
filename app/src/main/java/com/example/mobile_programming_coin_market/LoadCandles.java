@@ -2,6 +2,7 @@ package com.example.mobile_programming_coin_market;
 
 import android.icu.util.Calendar;
 import android.util.Log;
+import android.widget.TextView;
 
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,6 +39,7 @@ public class LoadCandles extends BaseTask {
     private String symbol;
     private Range range;
     CandleModel[] candleModels = null;
+    private final Object o = new Object();
 
     public LoadCandles(MainActivity mainActivity, String symbol, Range range){
         this.range = range;
@@ -90,20 +92,22 @@ public class LoadCandles extends BaseTask {
                     throw new IOException("Unexpected code " + response);
                 } else {
                     String result = response.body().string();
+                    Log.i("Candle", result);
                     Log.i("Candle", "Ok received");
                     Gson gson = new Gson();
                     candleModels = gson.fromJson(result, CandleModel[].class);
+                    Log.i("candles", "first "+ candleModels[0].time_close);
                     //extractCandlesFromResponse(response.body().string(), description);
                 }
-                synchronized (candleModels){
-                    candleModels.notify();
+                synchronized (o){
+                    o.notify();
                 }
             }
         });
-        synchronized (candleModels){
-            candleModels.wait();
+        synchronized (o){
+            o.wait();
         }
-        return candleModels;
+        return new ArrayList<CandleModel>(Arrays.asList(candleModels));
     }
 
     private String getCurrentDate() {
@@ -120,13 +124,12 @@ public class LoadCandles extends BaseTask {
     }
 
     @Override
-    public void setDataAfterLoading(Object coins) {
-        Log.i("inPost","entered set Data");
+    public void setDataAfterLoading(Object candles) {
+        Log.i("inPostOfCandles","entered set Data");
         if (mainActivityRef.get() != null){
-            RecyclerView recyclerView = (RecyclerView) mainActivityRef.get().findViewById(R.id.coinlist);
-            recyclerView.setLayoutManager(new LinearLayoutManager(mainActivityRef.get()));
-            CoinAdapter adapter = new CoinAdapter(recyclerView, mainActivityRef.get(), (ArrayList<CoinModel>) coins);
-            recyclerView.setAdapter(adapter);
+            ArrayList<CandleModel> candleModels1 = (ArrayList<CandleModel>)candles;
+            TextView temp = (TextView)mainActivityRef.get().findViewById(R.id.Temp);
+            temp.setText(candleModels1.get(0).time_close);
         }
 
     }

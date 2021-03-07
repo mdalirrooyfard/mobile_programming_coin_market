@@ -85,19 +85,18 @@
                     android:textColor="#004d40" />
 
 
-                <TextView
-                    android:id="@+id/change7d"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#b2dfdb"
-                    android:padding="10dp"
-                    android:text="Close"
-                    android:textAppearance="@android:style/TextAppearance.Medium"
-                    android:textColor="#004d40" />
-
-
             </LinearLayout>
         </ScrollView>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/change7d"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#b2dfdb"
+        android:padding="10dp"
+        android:text="Close"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textColor="#004d40" />
 </LinearLayout>

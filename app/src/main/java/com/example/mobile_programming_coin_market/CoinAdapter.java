@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,11 +19,11 @@ import java.util.List;
 public class CoinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     ILoadMore iLoadMore;
     boolean isLoading;
-    Activity activity;
+    MainActivity activity;
     List<CoinModel> items;
     int visibleThreshold = 10, lastVisibleItem, totalItemCount;
 
-    public CoinAdapter(RecyclerView recyclerView, Activity activity, ArrayList<CoinModel> items) {
+    public CoinAdapter(RecyclerView recyclerView, MainActivity activity, ArrayList<CoinModel> items) {
         this.activity = activity;
         this.items = items;
 
@@ -60,7 +61,10 @@ public class CoinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         item_holder.setClickListener(new CoinViewHolder.ItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-//              todo fill this
+                activity.setContentView(R.layout.second_page_layout);
+                TextView t = (TextView)activity.findViewById(R.id.symbolOfCoin);
+                t.setText(item.getSymbol());
+                activity.setButtons();
             }
         });
         item_holder.coin_name.setText(item.getName());
