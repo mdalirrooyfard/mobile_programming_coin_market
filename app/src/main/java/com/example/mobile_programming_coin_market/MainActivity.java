@@ -4,21 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import static java.text.DateFormat.getDateTimeInstance;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,30 +21,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+        Handler handler = new Handler(Looper.getMainLooper());
         Button start = (Button) findViewById(R.id.start);
+        TextView textView = (TextView) findViewById((R.id.firstcoin));
         Context context = getApplicationContext();
+
         start.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
-                Log.i("HEY", "HEY");
-                LoadCoins l = new LoadCoins(0, context);
-                executor.execute(l);
-            }
-        });
-
-        Button picture = (Button) findViewById(R.id.picture);
-        picture.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                Log.i("HEY", "in the second button");
-                ImageView imageView = (ImageView)findViewById(R.id.coin_picture);
-                Glide.with(getApplicationContext()).load("https://s2.coinmarketcap.com/static/img/coins/64x64/1.png").into(imageView);
-                Log.i("HEY", "Done the picture");
-
-                LoadCandles l2 = new LoadCandles("BTC", Range.weekly);
-                executor.execute(l2);
+                LoadCoins l = new LoadCoins(MainActivity.this, 0, context);
+                try {
+                    l.setUiForLoading();
+                    executor.execute(new RunnableTask<R>(handler, l));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
