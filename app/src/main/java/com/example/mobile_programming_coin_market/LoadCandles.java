@@ -4,15 +4,21 @@ import android.icu.util.Calendar;
 import android.util.Log;
 
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.gson.Gson;
 import com.google.gson.internal.$Gson$Preconditions;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -27,17 +33,19 @@ import okhttp3.Response;
 import static java.text.DateFormat.getDateTimeInstance;
 
 
-public class LoadCandles implements Runnable{
+public class LoadCandles extends BaseTask {
+    private WeakReference<MainActivity> mainActivityRef;
     private String symbol;
     private Range range;
+    CandleModel[] candleModels = null;
 
-    public LoadCandles(String symbol, Range range){
+    public LoadCandles(MainActivity mainActivity, String symbol, Range range){
         this.range = range;
         this.symbol = symbol;
+        this.mainActivityRef = new WeakReference<MainActivity>(mainActivity);
     }
 
-    public void getCandles() {
-
+    public Object call() throws Exception{
         OkHttpClient okHttpClient = new OkHttpClient();
 
         String miniUrl;
@@ -84,12 +92,18 @@ public class LoadCandles implements Runnable{
                     String result = response.body().string();
                     Log.i("Candle", "Ok received");
                     Gson gson = new Gson();
-                    CandleModel[] candleModels = gson.fromJson(result, CandleModel[].class);
+                    candleModels = gson.fromJson(result, CandleModel[].class);
                     //extractCandlesFromResponse(response.body().string(), description);
+                }
+                synchronized (candleModels){
+                    candleModels.notify();
                 }
             }
         });
-
+        synchronized (candleModels){
+            candleModels.wait();
+        }
+        return candleModels;
     }
 
     private String getCurrentDate() {
@@ -101,7 +115,19 @@ public class LoadCandles implements Runnable{
 
 
     @Override
-    public void run() {
-        getCandles();
+    public void setUiForLoading() {
+
+    }
+
+    @Override
+    public void setDataAfterLoading(Object coins) {
+        Log.i("inPost","entered set Data");
+        if (mainActivityRef.get() != null){
+            RecyclerView recyclerView = (RecyclerView) mainActivityRef.get().findViewById(R.id.coinlist);
+            recyclerView.setLayoutManager(new LinearLayoutManager(mainActivityRef.get()));
+            CoinAdapter adapter = new CoinAdapter(recyclerView, mainActivityRef.get(), (ArrayList<CoinModel>) coins);
+            recyclerView.setAdapter(adapter);
+        }
+
     }
 }

@@ -23,22 +23,15 @@ public class MainActivity extends AppCompatActivity {
         ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
         Handler handler = new Handler(Looper.getMainLooper());
         Button start = (Button) findViewById(R.id.start);
-        TextView textView = (TextView) findViewById((R.id.firstcoin));
+//        TextView textView = (TextView) findViewById((R.id.firstcoin));
         Context context = getApplicationContext();
-
-        start.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                LoadCoins l = new LoadCoins(MainActivity.this, 0, context);
-                try {
-                    l.setUiForLoading();
-                    executor.execute(new RunnableTask<R>(handler, l));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        LoadCoins l = new LoadCoins(MainActivity.this, 0, context);
+        try {
+            l.setUiForLoading();
+            executor.execute(new RunnableTask<R>(handler, l));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 }

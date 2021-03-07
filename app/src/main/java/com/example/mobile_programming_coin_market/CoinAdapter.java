@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.List;
 
 public class CoinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -20,7 +22,7 @@ public class CoinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     List<CoinModel> items;
     int visibleThreshold = 10, lastVisibleItem, totalItemCount;
 
-    public CoinAdapter(RecyclerView recyclerView, Activity activity, List<CoinModel> items) {
+    public CoinAdapter(RecyclerView recyclerView, Activity activity, ArrayList<CoinModel> items) {
         this.activity = activity;
         this.items = items;
 
@@ -55,10 +57,16 @@ public class CoinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         CoinModel item = items.get(position);
         CoinViewHolder item_holder = (CoinViewHolder)holder;
-
+        item_holder.setClickListener(new CoinViewHolder.ItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+//              todo fill this
+            }
+        });
         item_holder.coin_name.setText(item.getName());
         item_holder.coin_symbol.setText(item.getSymbol());
-        item_holder.coin_price.setText((int) item.getPrice());
+        Formatter formatter = new Formatter();
+        item_holder.coin_price.setText((formatter.format("%.2f", (Double)item.getPrice()).toString()));
         item_holder.percentageChangeOneHourText.setText((int) item.getPercent_change_1h()+"%");
         item_holder.percentageChangeOneDayText.setText((int) item.getPercent_change_24h()+"%");
         item_holder.percentageChangeOneWeekText.setText((int) item.getPercent_change_7d()+"%");

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">mobile_programming_coin_market</string>
+    <string name="app_name">Crypto-Currency App</string>
     <string name="coin_symbol">BTC</string>
     <string name="coin_divider">|</string>
     <string name="coin_name">Bitcoin</string>

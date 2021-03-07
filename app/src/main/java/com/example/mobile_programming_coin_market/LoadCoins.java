@@ -7,6 +7,9 @@ import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 
@@ -17,6 +20,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -76,12 +80,12 @@ public class LoadCoins extends BaseTask {
                         prices = body.getJSONObject("quote").getJSONObject("USD");
                         coin = new CoinModel(body.getInt("id"),body.getString("name"), body.getString("symbol"),prices.getDouble("price"), prices.getDouble("percent_change_1h"), prices.getDouble("percent_change_24h"), prices.getDouble("percent_change_7d"));
                         String url = "https://s2.coinmarketcap.com/static/img/coins/64x64/"+body.getInt("id")+".png";
-//                        coin.setIcon(GlideApp.with(context).load(url));
+                        coin.setIcon(GlideApp.with(context).load(url));
                         coins.add(coin);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Log.i("start", "HERE"+ coin.toString());
+                    Log.i("start", "HERE "+ coin.toString());
                 }
                 synchronized (coins){
                     coins.notify();
@@ -97,16 +101,17 @@ public class LoadCoins extends BaseTask {
 
     @Override
     public void setUiForLoading() {
-//        mainActivity.showProgressBar();
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) mainActivityRef.get().findViewById(R.id.rootlayout);
     }
 
     @Override
     public void setDataAfterLoading(Object coins) {
         Log.i("inPost","entered set Data");
         if (mainActivityRef.get() != null){
-            TextView textView = (TextView) mainActivityRef.get().findViewById((R.id.firstcoin));
-            textView.setText(((ArrayList<CoinModel>)coins).get(0).name);
-//            //adapt contents
+            RecyclerView recyclerView = (RecyclerView) mainActivityRef.get().findViewById(R.id.coinlist);
+            recyclerView.setLayoutManager(new LinearLayoutManager(mainActivityRef.get()));
+            CoinAdapter adapter = new CoinAdapter(recyclerView, mainActivityRef.get(), (ArrayList<CoinModel>) coins);
+            recyclerView.setAdapter(adapter);
         }
 
     }
