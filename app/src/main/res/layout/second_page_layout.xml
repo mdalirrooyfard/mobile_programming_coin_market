@@ -24,23 +24,14 @@
         android:layout_alignParentRight="true"
         android:text="30 days" />
 
-    <TextView
-        android:id="@+id/symbolOfCoin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Symbol"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="16dp"
+    <com.github.mikephil.charting.charts.CandleStickChart
+        android:id="@+id/candle_stick"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
         android:layout_below="@id/seven_days"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
         />
 
-    <TextView
-        android:id="@+id/Temp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="temp"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_below="@id/symbolOfCoin"
-        />
 </RelativeLayout>

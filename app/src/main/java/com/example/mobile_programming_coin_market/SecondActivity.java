@@ -21,8 +21,8 @@ public class SecondActivity extends AppCompatActivity {
         executor = MySingleTone.getThreadPool();
         Handler handler1 = new Handler(Looper.getMainLooper());
         String Symbol = (String) getIntent().getSerializableExtra("Symbol");
-        TextView t = (TextView)findViewById(R.id.symbolOfCoin);
-        t.setText(Symbol);
+//        TextView t = (TextView)findViewById(R.id.symbolOfCoin);
+//        t.setText(Symbol);
         Button view_7_days_candle = (Button)findViewById(R.id.seven_days);
         view_7_days_candle.setOnClickListener(new View.OnClickListener() {
             @Override
