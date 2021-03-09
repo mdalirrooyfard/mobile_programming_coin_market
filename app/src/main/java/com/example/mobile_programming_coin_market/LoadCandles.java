@@ -1,28 +1,17 @@
 package com.example.mobile_programming_coin_market;
 
-import android.icu.util.Calendar;
 import android.util.Log;
 import android.widget.TextView;
 
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.google.gson.Gson;
-import com.google.gson.internal.$Gson$Preconditions;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -35,16 +24,16 @@ import static java.text.DateFormat.getDateTimeInstance;
 
 
 public class LoadCandles extends BaseTask {
-    private WeakReference<MainActivity> mainActivityRef;
+    private WeakReference<SecondActivity> secondActivityRef;
     private String symbol;
     private Range range;
     CandleModel[] candleModels = null;
     private final Object o = new Object();
 
-    public LoadCandles(MainActivity mainActivity, String symbol, Range range){
+    public LoadCandles(SecondActivity secondActivity, String symbol, Range range){
         this.range = range;
         this.symbol = symbol;
-        this.mainActivityRef = new WeakReference<MainActivity>(mainActivity);
+        this.secondActivityRef = new WeakReference<SecondActivity>(secondActivity);
     }
 
     public Object call() throws Exception{
@@ -126,9 +115,9 @@ public class LoadCandles extends BaseTask {
     @Override
     public void setDataAfterLoading(Object candles) {
         Log.i("inPostOfCandles","entered set Data");
-        if (mainActivityRef.get() != null){
+        if (secondActivityRef.get() != null){
             ArrayList<CandleModel> candleModels1 = (ArrayList<CandleModel>)candles;
-            TextView temp = (TextView)mainActivityRef.get().findViewById(R.id.Temp);
+            TextView temp = (TextView) secondActivityRef.get().findViewById(R.id.Temp);
             temp.setText(candleModels1.get(0).time_close);
         }
 

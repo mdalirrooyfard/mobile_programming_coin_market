@@ -1,6 +1,7 @@
 package com.example.mobile_programming_coin_market;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,10 +62,7 @@ public class CoinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         item_holder.setClickListener(new CoinViewHolder.ItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                activity.setContentView(R.layout.second_page_layout);
-                TextView t = (TextView)activity.findViewById(R.id.symbolOfCoin);
-                t.setText(item.getSymbol());
-                activity.setButtons();
+                activity.startSecondActivity(item.getSymbol());
             }
         });
         item_holder.coin_name.setText(item.getName());

@@ -41,7 +41,7 @@ public class LoadCoins extends BaseTask {
         client = new OkHttpClient();
         this.context = context;
         String uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=1&limit=10";
-        request = new Request.Builder().url(uri).addHeader("X-CMC_PRO_API_KEY", "3d34d69c-aefa-4c11-aa70-a8a9f49fa577").addHeader("Accept" ,"application/json").build();
+        request = new Request.Builder().url(uri).addHeader("X-CMC_PRO_API_KEY", "1b622bf4-0389-4c29-8fd4-4bb3238a7e2e").addHeader("Accept" ,"application/json").build();
         coins = new ArrayList<CoinModel>();
 
     }
