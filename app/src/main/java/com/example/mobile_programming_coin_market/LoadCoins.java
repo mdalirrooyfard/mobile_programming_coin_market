@@ -2,7 +2,10 @@ package com.example.mobile_programming_coin_market;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -102,6 +105,14 @@ public class LoadCoins extends BaseTask {
     @Override
     public void setUiForLoading() {
         SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) mainActivityRef.get().findViewById(R.id.rootlayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Intent refresh = new Intent(mainActivityRef.get(), mainActivityRef.get().getClass());
+                mainActivityRef.get().startActivity(refresh);
+                mainActivityRef.get().finish();
+            }
+        });
     }
 
     @Override
