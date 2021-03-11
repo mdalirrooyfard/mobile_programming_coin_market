@@ -17,6 +17,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class MainActivity extends AppCompatActivity {
     ThreadPoolExecutor executor;
+    private Boolean isFirstPageLoading = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,5 +39,17 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), SecondActivity.class);
         intent.putExtra("Symbol", Symbol);
         startActivity(intent);
+    }
+
+    public void startLoadingFirstPage(){
+        this.isFirstPageLoading = true;
+    }
+
+    public void endLoadingFirstPage(){
+        this.isFirstPageLoading = false;
+    }
+
+    public Boolean getIsFirstPageLoading(){
+        return this.isFirstPageLoading;
     }
 }

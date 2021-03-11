@@ -169,7 +169,7 @@ public class LoadCandles extends BaseTask {
             CandleData data = new CandleData(set1);
             candleStickChart.setData(data);
             candleStickChart.invalidate();
-
+            secondActivityRef.get().endChartLoading();
         }
 
     }

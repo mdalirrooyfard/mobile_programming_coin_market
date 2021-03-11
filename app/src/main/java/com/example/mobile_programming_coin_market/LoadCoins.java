@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -108,9 +109,17 @@ public class LoadCoins extends BaseTask {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Intent refresh = new Intent(mainActivityRef.get(), mainActivityRef.get().getClass());
-                mainActivityRef.get().startActivity(refresh);
-                mainActivityRef.get().finish();
+                if (!mainActivityRef.get().getIsFirstPageLoading()) {
+                    Intent refresh = new Intent(mainActivityRef.get(), mainActivityRef.get().getClass());
+                    mainActivityRef.get().startActivity(refresh);
+                    mainActivityRef.get().finish();
+                }
+                else{
+                    CharSequence message = "Please wait for full loading. Then refresh again.";
+                    Toast toast = Toast.makeText(mainActivityRef.get(), message, Toast.LENGTH_LONG);
+                    swipeRefreshLayout.setRefreshing(false);
+                    toast.show();
+                }
             }
         });
     }
@@ -123,6 +132,7 @@ public class LoadCoins extends BaseTask {
             recyclerView.setLayoutManager(new LinearLayoutManager(mainActivityRef.get()));
             CoinAdapter adapter = new CoinAdapter(recyclerView, mainActivityRef.get(), (ArrayList<CoinModel>) coins);
             recyclerView.setAdapter(adapter);
+            mainActivityRef.get().endLoadingFirstPage();
         }
 
     }
