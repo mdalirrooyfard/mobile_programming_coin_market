@@ -5,6 +5,8 @@ import android.graphics.Paint;
 import android.os.Build;
 import android.os.Trace;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -48,11 +50,15 @@ public class LoadCandles extends BaseTask {
     private Range range;
     CandleModel[] candleModels = null;
     private final Object o = new Object();
+    ProgressBar p;
+    CandleStickChart candleStickChart;
 
     public LoadCandles(SecondActivity secondActivity, String symbol, Range range){
         this.range = range;
         this.symbol = symbol;
         this.secondActivityRef = new WeakReference<SecondActivity>(secondActivity);
+        p = (ProgressBar)secondActivityRef.get().findViewById(R.id.progress_bar);
+        candleStickChart = (CandleStickChart)secondActivityRef.get().findViewById(R.id.candle_stick);
     }
 
     public Object call() throws Exception{
@@ -148,7 +154,8 @@ public class LoadCandles extends BaseTask {
 
     @Override
     public void setUiForLoading() {
-
+        candleStickChart.setVisibility(View.INVISIBLE);
+        p.setVisibility(View.VISIBLE);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.P)
@@ -157,7 +164,7 @@ public class LoadCandles extends BaseTask {
         Log.i("inPostOfCandles","entered set Data");
         if (secondActivityRef.get() != null){
             ArrayList<CandleModel> candleModels1 = (ArrayList<CandleModel>)candles;
-            CandleStickChart candleStickChart = (CandleStickChart)secondActivityRef.get().findViewById(R.id.candle_stick);
+            candleStickChart = (CandleStickChart)secondActivityRef.get().findViewById(R.id.candle_stick);
             candleStickChart.setNoDataText("");
             candleStickChart.setNoDataTextColor(R.color.white);
             candleStickChart.setHighlightPerDragEnabled(true);
@@ -197,7 +204,10 @@ public class LoadCandles extends BaseTask {
             candleStickChart.setData(data);
             candleStickChart.invalidate();
             secondActivityRef.get().endChartLoading();
+            candleStickChart.setVisibility(View.VISIBLE);
+            p.setVisibility(View.INVISIBLE);
         }
+
 
     }
 }

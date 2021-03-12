@@ -25,14 +25,20 @@
         android:layout_alignParentRight="true"
         android:text="30 days" />
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible" />
+
     <com.github.mikephil.charting.charts.CandleStickChart
         android:id="@+id/candle_stick"
         android:layout_width="match_parent"
         android:layout_height="500dp"
         android:layout_below="@id/seven_days"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="121dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
-        />
+        android:layout_marginRight="4dp" />
 
 </RelativeLayout>
