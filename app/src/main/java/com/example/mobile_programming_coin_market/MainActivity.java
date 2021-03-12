@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,6 +24,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if(!checkConnection()){
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            return;
+        }
+
         executor = MySingleTone.getThreadPool();
         Handler handler = new Handler(Looper.getMainLooper());
         Context context = getApplicationContext();
@@ -51,5 +59,13 @@ public class MainActivity extends AppCompatActivity {
 
     public Boolean getIsFirstPageLoading(){
         return this.isFirstPageLoading;
+    }
+    private boolean checkConnection() {
+        ConnectivityManager cm =
+                (ConnectivityManager) this.getSystemService(this.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
     }
 }

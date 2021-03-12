@@ -25,7 +25,9 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.CacheControl;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -45,7 +47,9 @@ public class LoadCoins extends BaseTask {
         client = new OkHttpClient();
         this.context = context;
         String uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=1&limit=10";
-        request = new Request.Builder().url(uri).addHeader("X-CMC_PRO_API_KEY", "1b622bf4-0389-4c29-8fd4-4bb3238a7e2e").addHeader("Accept" ,"application/json").build();
+        request = new Request.Builder().cacheControl(new CacheControl.Builder()
+                .maxStale(365, TimeUnit.DAYS)
+                .build()).url(uri).addHeader("X-CMC_PRO_API_KEY", "1b622bf4-0389-4c29-8fd4-4bb3238a7e2e").addHeader("Accept" ,"application/json").build();
         coins = new ArrayList<CoinModel>();
 
     }
@@ -55,6 +59,7 @@ public class LoadCoins extends BaseTask {
 
         Object result = null;
         //some network request for example
+//        client.newCall(request).enqueue(new Callback() {
         client.newCall(request).enqueue(new Callback() {
 
             @Override
