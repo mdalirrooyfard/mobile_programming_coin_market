@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Adapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -40,17 +42,24 @@ public class LoadCoins extends BaseTask {
     private OkHttpClient client;
     private Request request;
     ArrayList<CoinModel> coins;
+    Boolean[] isLoading;
+    Integer[] start;
+    Integer[] limit;
     private Context context;
 
-    public LoadCoins(MainActivity mainActivity, int start, Context context) {
+    public LoadCoins(MainActivity mainActivity, Integer[] start, Integer[] limit, ArrayList<CoinModel> coins, Boolean[] isLoading, Context context) {
         this.mainActivityRef = new WeakReference<MainActivity>(mainActivity);
         client = new OkHttpClient();
         this.context = context;
-        String uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=1&limit=10";
+        String uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start="+start[0].toString()+"&limit=20"+limit[0].toString();
         request = new Request.Builder().cacheControl(new CacheControl.Builder()
                 .maxStale(365, TimeUnit.DAYS)
                 .build()).url(uri).addHeader("X-CMC_PRO_API_KEY", "1b622bf4-0389-4c29-8fd4-4bb3238a7e2e").addHeader("Accept" ,"application/json").build();
-        coins = new ArrayList<CoinModel>();
+
+        this.coins = coins;
+        this.start = start;
+        this.limit = limit;
+        this.isLoading = isLoading;
 
     }
 
@@ -59,7 +68,6 @@ public class LoadCoins extends BaseTask {
 
         Object result = null;
         //some network request for example
-//        client.newCall(request).enqueue(new Callback() {
         client.newCall(request).enqueue(new Callback() {
 
             @Override
@@ -70,7 +78,8 @@ public class LoadCoins extends BaseTask {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-
+//                isLoading[0] = true;
+                mainActivityRef.get().startLoadingFirstPage();
                 JSONObject object = null;
                 JSONArray array = null;
                 try {
@@ -80,7 +89,7 @@ public class LoadCoins extends BaseTask {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < limit[0]; i++) {
                     JSONObject body = null;
                     JSONObject prices = null;
                     CoinModel coin = null;
@@ -105,6 +114,10 @@ public class LoadCoins extends BaseTask {
             coins.wait();
         }
         result = coins;
+//        isLoading[0] = false;
+        mainActivityRef.get().endLoadingFirstPage();
+        start[0] += limit[0];
+        limit[0] = 10;
         return result;
     }
 
@@ -116,6 +129,7 @@ public class LoadCoins extends BaseTask {
             public void onRefresh() {
                 if (!mainActivityRef.get().getIsFirstPageLoading()) {
                     Intent refresh = new Intent(mainActivityRef.get(), mainActivityRef.get().getClass());
+                    refresh.putExtra("Start", start);
                     mainActivityRef.get().startActivity(refresh);
                     mainActivityRef.get().finish();
                 }

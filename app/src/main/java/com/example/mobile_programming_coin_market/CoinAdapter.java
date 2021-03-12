@@ -18,7 +18,7 @@ import java.util.Formatter;
 import java.util.List;
 
 public class CoinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    ILoadMore iLoadMore;
+
     boolean isLoading;
     MainActivity activity;
     List<CoinModel> items;
@@ -35,18 +35,11 @@ public class CoinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 super.onScrolled(recyclerView, dx, dy);
                 totalItemCount = linearLayoutManager.getItemCount();
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)){
-                    if (iLoadMore != null)
-                        iLoadMore.onLoadMore();
-                    isLoading = true;
-                }
+
             }
         });
     }
 
-    public void setiLoadMore(ILoadMore iLoadMore){
-        this.iLoadMore = iLoadMore;
-    }
 
     @NonNull
     @Override

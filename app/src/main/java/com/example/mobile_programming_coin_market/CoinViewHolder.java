@@ -21,6 +21,7 @@ public class CoinViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         percentageChangeOneHourText = (TextView)itemView.findViewById(R.id.percentageChangeOneHourText);
         percentageChangeOneDayText = (TextView)itemView.findViewById(R.id.percentageChangeOneDayText);
         percentageChangeOneWeekText = (TextView)itemView.findViewById(R.id.percentageChangeOneWeekText);
+
         itemView.setOnClickListener(this);
     }
 
