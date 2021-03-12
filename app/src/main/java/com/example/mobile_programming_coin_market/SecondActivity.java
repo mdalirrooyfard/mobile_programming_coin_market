@@ -1,5 +1,7 @@
 package com.example.mobile_programming_coin_market;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -27,6 +29,11 @@ public class SecondActivity extends AppCompatActivity {
         view_7_days_candle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!checkConnection()){
+                    CharSequence message = "Internet is not connected.";
+                    Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+                    toast.show();
+                }
                 if (!isChartLoading) {
                     isChartLoading = true;
                     LoadCandles l2 = new LoadCandles(SecondActivity.this, Symbol, Range.weekly);
@@ -50,6 +57,11 @@ public class SecondActivity extends AppCompatActivity {
         view_30days_candles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!checkConnection()){
+                    CharSequence message = "Internet is not connected.";
+                    Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+                    toast.show();
+                }
                 if (!isChartLoading) {
                     isChartLoading = true;
                     LoadCandles l2 = new LoadCandles(SecondActivity.this, Symbol, Range.oneMonth);
@@ -77,5 +89,13 @@ public class SecondActivity extends AppCompatActivity {
 
     public Boolean getIsChartLoading(){
         return this.isChartLoading;
+    }
+    public boolean checkConnection() {
+        ConnectivityManager cm =
+                (ConnectivityManager) this.getSystemService(this.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.mobile_programming_coin_market;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,11 +30,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if(!checkConnection()){
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            return;
+//            Intent intent = new Intent(this, MainActivity.class);
+//            startActivity(intent);
+//            return;
+            CharSequence message = "Internet is not connected.";
+            Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+            toast.show();
         }
-
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.rootlayout);
+        swipeRefreshLayout.setRefreshing(true);
         executor = MySingleTone.getThreadPool();
         Handler handler = new Handler(Looper.getMainLooper());
         Context context = getApplicationContext();
@@ -67,8 +73,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.i("load more","CLICKED");
-                if(!isFirstPageLoading){
+                if(!isLoading[0]){
                     Log.i("loading","is not loading");
+                    SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.rootlayout);
+                    swipeRefreshLayout.setRefreshing(true);
                     LoadCoins l = new LoadCoins(MainActivity.this, finalStart, finalLimit, finalCoins, isLoading, context);
                     try {
                         l.setUiForLoading();
@@ -78,8 +86,12 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-
-
+                else{
+                    Log.i("loading","Hoooooooo");
+                    CharSequence message = "Please wait for full loading.";
+                    Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+                    toast.show();
+                }
             }
         });
 
@@ -102,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
     public Boolean getIsFirstPageLoading(){
         return this.isFirstPageLoading;
     }
-    private boolean checkConnection() {
+    public boolean checkConnection() {
         ConnectivityManager cm =
                 (ConnectivityManager) this.getSystemService(this.CONNECTIVITY_SERVICE);
 

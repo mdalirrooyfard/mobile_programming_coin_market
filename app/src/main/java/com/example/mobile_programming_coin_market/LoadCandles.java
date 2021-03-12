@@ -20,16 +20,21 @@ import com.github.mikephil.charting.data.CandleDataSet;
 import com.github.mikephil.charting.data.CandleEntry;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.Cache;
+import okhttp3.CacheControl;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -51,7 +56,27 @@ public class LoadCandles extends BaseTask {
     }
 
     public Object call() throws Exception{
-        OkHttpClient okHttpClient = new OkHttpClient();
+        File httpCacheDirectory = new File(secondActivityRef.get().getCacheDir(), "responses");
+        int cacheSize = 10*1024*1024;
+        Cache cache = new Cache(httpCacheDirectory, cacheSize);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addNetworkInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        Response originalResponse = chain.proceed(chain.request());
+                        if (secondActivityRef.get().checkConnection()) {
+                            int maxAge = 360; // read from cache for 1 minute
+                            return originalResponse.newBuilder()
+                                    .header("Cache-Control", "public, max-age=" + maxAge)
+                                    .build();
+                        } else {
+                            int maxStale = 60 * 60 * 24 * 28; // tolerate 4-weeks stale
+                            return originalResponse.newBuilder()
+                                    .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
+                                    .build();
+                        }
+                    }
+                }).cache(cache).build();
 
         String miniUrl;
         final String description;
@@ -77,7 +102,9 @@ public class LoadCandles extends BaseTask {
 
         String url = urlBuilder.build().toString();
 
-        final Request request = new Request.Builder().url(url)
+        final Request request = new Request.Builder().cacheControl(new CacheControl.Builder()
+                .maxStale(365, TimeUnit.DAYS)
+                .build()).url(url)
                 .addHeader("X-CoinAPI-Key", "D35CB680-6FEC-4CC9-AAD7-7BB34F7631B1")
                 .addHeader("Accept" ,"application/json")
                 .build();
@@ -115,7 +142,7 @@ public class LoadCandles extends BaseTask {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
         String str = simpleDateFormat.format(date);
-        return str.split(" ")[0] + "T"+str.split(" ")[1];
+        return str.split(" ")[0] ;
     }
 
 
