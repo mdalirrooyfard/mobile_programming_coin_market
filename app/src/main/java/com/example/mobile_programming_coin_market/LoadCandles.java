@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.annotation.RequiresApi;
@@ -164,47 +165,54 @@ public class LoadCandles extends BaseTask {
         Log.i("inPostOfCandles","entered set Data");
         if (secondActivityRef.get() != null){
             ArrayList<CandleModel> candleModels1 = (ArrayList<CandleModel>)candles;
-            candleStickChart = (CandleStickChart)secondActivityRef.get().findViewById(R.id.candle_stick);
-            candleStickChart.setNoDataText("");
-            candleStickChart.setNoDataTextColor(R.color.white);
-            candleStickChart.setHighlightPerDragEnabled(true);
-            candleStickChart.setDrawBorders(true);
-            YAxis yAxis = candleStickChart.getAxisLeft();
-            YAxis rightAxis = candleStickChart.getAxisRight();
-            yAxis.setDrawGridLines(false);
-            rightAxis.setDrawGridLines(false);
-            candleStickChart.requestDisallowInterceptTouchEvent(true);
-            XAxis xAxis = candleStickChart.getXAxis();
-            xAxis.setDrawGridLines(false);
-            xAxis.setDrawLabels(true);
-            rightAxis.setTextColor(Color.WHITE);
-            yAxis.setDrawLabels(true);
-            xAxis.setGranularity(1f);
-            xAxis.setGranularityEnabled(true);
-            xAxis.setAvoidFirstLastClipping(true);
-            candleStickChart.setPinchZoom(true);
-            Legend l = candleStickChart.getLegend();
-            l.setEnabled(true);
-            ArrayList<CandleEntry> yValsCandleStick = new ArrayList<CandleEntry>();
-            for (int i = 0; i < candleModels1.size(); i++){
-                yValsCandleStick.add(new CandleEntry(i, candleModels1.get(i).price_high.floatValue(), candleModels1.get(i).price_low.floatValue()
-                        , candleModels1.get(i).price_open.floatValue(), candleModels1.get(i).price_close.floatValue()));
+            if (candleModels1.size() > 0) {
+                candleStickChart = (CandleStickChart) secondActivityRef.get().findViewById(R.id.candle_stick);
+                candleStickChart.setNoDataText("");
+                candleStickChart.setNoDataTextColor(R.color.white);
+                candleStickChart.setHighlightPerDragEnabled(true);
+                candleStickChart.setDrawBorders(true);
+                YAxis yAxis = candleStickChart.getAxisLeft();
+                YAxis rightAxis = candleStickChart.getAxisRight();
+                yAxis.setDrawGridLines(false);
+                rightAxis.setDrawGridLines(false);
+                candleStickChart.requestDisallowInterceptTouchEvent(true);
+                XAxis xAxis = candleStickChart.getXAxis();
+                xAxis.setDrawGridLines(false);
+                xAxis.setDrawLabels(true);
+                rightAxis.setTextColor(Color.WHITE);
+                yAxis.setDrawLabels(true);
+                xAxis.setGranularity(1f);
+                xAxis.setGranularityEnabled(true);
+                xAxis.setAvoidFirstLastClipping(true);
+                candleStickChart.setPinchZoom(true);
+                Legend l = candleStickChart.getLegend();
+                l.setEnabled(true);
+                ArrayList<CandleEntry> yValsCandleStick = new ArrayList<CandleEntry>();
+                for (int i = 0; i < candleModels1.size(); i++) {
+                    yValsCandleStick.add(new CandleEntry(i, candleModels1.get(i).price_high.floatValue(), candleModels1.get(i).price_low.floatValue()
+                            , candleModels1.get(i).price_open.floatValue(), candleModels1.get(i).price_close.floatValue()));
+                }
+                CandleDataSet set1 = new CandleDataSet(yValsCandleStick, "DataSet 1");
+                set1.setColor(Color.rgb(80, 80, 80));
+                set1.setShadowColor(secondActivityRef.get().getResources().getColor(R.color.colorLightGrayMore));
+                set1.setShadowWidth(0.8f);
+                set1.setDecreasingColor(secondActivityRef.get().getResources().getColor(R.color.colorRed));
+                set1.setDecreasingPaintStyle(Paint.Style.FILL);
+                set1.setIncreasingColor(secondActivityRef.get().getResources().getColor(R.color.teal_700));
+                set1.setIncreasingPaintStyle(Paint.Style.FILL);
+                set1.setNeutralColor(Color.LTGRAY);
+                set1.setDrawValues(false);
+                CandleData data = new CandleData(set1);
+                candleStickChart.setData(data);
+                candleStickChart.invalidate();
+                secondActivityRef.get().endChartLoading();
+                candleStickChart.setVisibility(View.VISIBLE);
             }
-            CandleDataSet set1 = new CandleDataSet(yValsCandleStick, "DataSet 1");
-            set1.setColor(Color.rgb(80, 80, 80));
-            set1.setShadowColor(secondActivityRef.get().getResources().getColor(R.color.colorLightGrayMore));
-            set1.setShadowWidth(0.8f);
-            set1.setDecreasingColor(secondActivityRef.get().getResources().getColor(R.color.colorRed));
-            set1.setDecreasingPaintStyle(Paint.Style.FILL);
-            set1.setIncreasingColor(secondActivityRef.get().getResources().getColor(R.color.teal_700));
-            set1.setIncreasingPaintStyle(Paint.Style.FILL);
-            set1.setNeutralColor(Color.LTGRAY);
-            set1.setDrawValues(false);
-            CandleData data = new CandleData(set1);
-            candleStickChart.setData(data);
-            candleStickChart.invalidate();
-            secondActivityRef.get().endChartLoading();
-            candleStickChart.setVisibility(View.VISIBLE);
+            else{
+                CharSequence message = "Sorry, No candles for this coin.";
+                Toast toast = Toast.makeText(secondActivityRef.get(), message, Toast.LENGTH_LONG);
+                toast.show();
+            }
             p.setVisibility(View.INVISIBLE);
         }
 
